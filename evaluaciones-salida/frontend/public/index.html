@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evaluaciones de Salida — FYRESA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root {
+  --primary: #1a3a5c;
+  --primary-light: #2563a8;
+  --primary-pale: #e8f0fb;
+  --accent: #d4a843;
+  --danger: #c0392b;
+  --danger-pale: #fdf0ef;
+  --success: #1a7a4a;
+  --success-pale: #eaf5ef;
+  --warning: #b5620a;
+  --warning-pale: #fef3e2;
+  --purple: #6c3fa0;
+  --purple-pale: #f3edfc;
+  --gray-50: #f8f8f7;
+  --gray-100: #f0eeeb;
+  --gray-200: #e0ddd8;
+  --gray-300: #c8c4bc;
+  --gray-500: #857f75;
+  --gray-700: #4a4640;
+  --gray-900: #1c1a17;
+  --font: 'DM Sans', sans-serif;
+  --mono: 'DM Mono', monospace;
+  --radius: 8px;
+  --radius-lg: 14px;
+  --shadow: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.1), 0 2px 4px rgba(0,0,0,.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); background: var(--gray-50); color: var(--gray-900); font-size: 14px; line-height: 1.5; }
+a { color: var(--primary-light); text-decoration: none; }
+
+/* ── Login ── */
+.login-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, var(--primary) 0%, #0f2540 100%); }
+.login-card { background: #fff; border-radius: var(--radius-lg); padding: 2.5rem; width: 380px; box-shadow: var(--shadow-md); }
+.login-logo { text-align: center; margin-bottom: 2rem; }
+.login-logo .brand { font-size: 28px; font-weight: 600; color: var(--primary); letter-spacing: -0.5px; }
+.login-logo .sub { font-size: 12px; color: var(--gray-500); margin-top: 2px; }
+.login-card h2 { font-size: 18px; font-weight: 500; margin-bottom: 1.5rem; color: var(--gray-900); }
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: 12px; font-weight: 500; color: var(--gray-700); margin-bottom: 5px; }
+.form-input { width: 100%; padding: 9px 12px; border: 1.5px solid var(--gray-200); border-radius: var(--radius); font-family: var(--font); font-size: 14px; color: var(--gray-900); background: #fff; transition: border-color .15s; }
+.form-input:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(37,99,168,.12); }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: var(--radius); font-family: var(--font); font-size: 13px; font-weight: 500; cursor: pointer; border: 1.5px solid transparent; transition: all .15s; white-space: nowrap; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-light); border-color: var(--primary-light); }
+.btn-outline { background: #fff; color: var(--gray-700); border-color: var(--gray-200); }
+.btn-outline:hover { background: var(--gray-50); border-color: var(--gray-300); }
+.btn-success { background: var(--success); color: #fff; border-color: var(--success); }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+.btn-full { width: 100%; justify-content: center; }
+.btn-icon { background: var(--primary); color: #fff; border-color: var(--primary); padding: 8px 10px; font-size: 14px; border-radius: var(--radius); border: none; cursor: pointer; transition: background .15s; }
+.btn-icon:hover { background: var(--primary-light); }
+.error-msg { background: var(--danger-pale); color: var(--danger); font-size: 13px; padding: 9px 12px; border-radius: var(--radius); margin-bottom: 1rem; display: none; }
+
+/* ── Layout ── */
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: 230px; background: var(--primary); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+.sidebar-brand { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,.1); }
+.sidebar-brand .name { font-size: 18px; font-weight: 600; color: #fff; letter-spacing: -.3px; }
+.sidebar-brand .tagline { font-size: 11px; color: rgba(255,255,255,.5); margin-top: 2px; }
+.sidebar-section { padding: 16px 12px 8px; font-size: 10px; font-weight: 600; color: rgba(255,255,255,.35); letter-spacing: .08em; text-transform: uppercase; }
+.nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; margin: 1px 8px; border-radius: var(--radius); font-size: 13px; color: rgba(255,255,255,.7); cursor: pointer; transition: all .15s; }
+.nav-item i { width: 16px; font-size: 14px; }
+.nav-item:hover { background: rgba(255,255,255,.08); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,.15); color: #fff; font-weight: 500; }
+.nav-badge { margin-left: auto; background: var(--accent); color: var(--primary); font-size: 10px; font-weight: 600; padding: 2px 6px; border-radius: 10px; }
+.sidebar-user { margin-top: auto; padding: 14px 16px; border-top: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 10px; }
+.user-avatar { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; color: #fff; flex-shrink: 0; }
+.user-name { font-size: 12px; font-weight: 500; color: #fff; }
+.user-rol { font-size: 10px; color: rgba(255,255,255,.5); }
+.logout-btn { margin-left: auto; background: none; border: none; color: rgba(255,255,255,.5); cursor: pointer; font-size: 14px; padding: 4px; transition: color .15s; }
+.logout-btn:hover { color: #fff; }
+
+/* ── Main ── */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar { background: #fff; border-bottom: 1px solid var(--gray-200); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title { font-size: 16px; font-weight: 600; color: var(--gray-900); }
+.topbar-sub { font-size: 12px; color: var(--gray-500); margin-top: 1px; }
+.content { flex: 1; overflow-y: auto; padding: 24px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+.page-title { font-size: 20px; font-weight: 600; color: var(--gray-900); }
+.breadcrumb { font-size: 12px; color: var(--gray-500); margin-bottom: 20px; display: flex; align-items: center; gap: 6px; }
+.breadcrumb span { color: var(--primary-light); cursor: pointer; }
+.breadcrumb span:hover { text-decoration: underline; }
+
+/* ── Stats ── */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 22px; }
+.stat-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 16px 18px; }
+.stat-label { font-size: 11px; font-weight: 500; color: var(--gray-500); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+.stat-num { font-size: 32px; font-weight: 300; color: var(--gray-900); line-height: 1; font-family: var(--mono); }
+.stat-sub { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+.stat-a { border-top: 3px solid var(--primary-light); }
+.stat-b { border-top: 3px solid var(--success); }
+.stat-c { border-top: 3px solid var(--danger); }
+.stat-p { border-top: 3px solid var(--accent); }
+.stat-a .stat-num { color: var(--primary-light); }
+.stat-b .stat-num { color: var(--success); }
+.stat-c .stat-num { color: var(--danger); }
+.stat-p .stat-num { color: var(--warning); }
+
+/* ── Tabla ── */
+.card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); overflow: hidden; }
+.card-header { padding: 14px 18px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.card-title { font-size: 14px; font-weight: 600; color: var(--gray-900); display: flex; align-items: center; gap: 8px; }
+.filters { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.filter-input { padding: 6px 10px; border: 1.5px solid var(--gray-200); border-radius: var(--radius); font-family: var(--font); font-size: 12px; color: var(--gray-900); background: #fff; }
+.filter-input:focus { outline: none; border-color: var(--primary-light); }
+table { width: 100%; border-collapse: collapse; }
+th { background: var(--gray-50); padding: 10px 14px; text-align: left; font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: .05em; border-bottom: 1px solid var(--gray-200); white-space: nowrap; }
+td { padding: 11px 14px; border-bottom: 1px solid var(--gray-100); font-size: 13px; vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--gray-50); }
+.table-footer { padding: 10px 18px; font-size: 12px; color: var(--gray-500); border-top: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; }
+
+/* ── Badges ── */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.badge-a { background: var(--primary-pale); color: var(--primary); }
+.badge-b { background: var(--success-pale); color: var(--success); }
+.badge-c { background: var(--danger-pale); color: var(--danger); }
+.badge-pend { background: var(--warning-pale); color: var(--warning); }
+.badge-proceso { background: var(--purple-pale); color: var(--purple); }
+.badge-auto { background: var(--success-pale); color: var(--success); }
+.badge-rech { background: var(--danger-pale); color: var(--danger); }
+
+/* ── Modal ── */
+.modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
+.modal-backdrop.open { display: flex; }
+.modal { background: #fff; border-radius: var(--radius-lg); width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-md); }
+.modal-wide { width: 750px; }
+.modal-header { padding: 18px 20px; border-bottom: 1px solid var(--gray-100); display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; background: #fff; z-index: 1; }
+.modal-header h3 { font-size: 16px; font-weight: 600; }
+.modal-close { background: none; border: none; font-size: 18px; color: var(--gray-500); cursor: pointer; padding: 2px; line-height: 1; }
+.modal-close:hover { color: var(--gray-900); }
+.modal-body { padding: 20px; }
+.modal-footer { padding: 16px 20px; border-top: 1px solid var(--gray-100); display: flex; gap: 8px; justify-content: flex-end; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+.mb-4 { margin-bottom: 16px; }
+textarea.form-input { resize: vertical; min-height: 80px; }
+select.form-input { cursor: pointer; }
+.form-hint { font-size: 11px; color: var(--gray-500); margin-top: 4px; }
+
+/* ── Clasificación selector ── */
+.clasif-opts { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.clasif-opt { border: 2px solid var(--gray-200); border-radius: var(--radius-lg); padding: 14px 12px; cursor: pointer; transition: all .15s; text-align: center; }
+.clasif-opt:hover { border-color: var(--gray-300); background: var(--gray-50); }
+.clasif-opt.sel-A { border-color: var(--primary-light); background: var(--primary-pale); }
+.clasif-opt.sel-B { border-color: var(--success); background: var(--success-pale); }
+.clasif-opt.sel-C { border-color: var(--danger); background: var(--danger-pale); }
+.clasif-opt .opt-letter { font-size: 28px; font-weight: 300; font-family: var(--mono); margin-bottom: 4px; }
+.clasif-opt .opt-label { font-size: 12px; font-weight: 500; }
+.clasif-opt .opt-desc { font-size: 10px; color: var(--gray-500); margin-top: 3px; }
+.clasif-opt[data-v="A"] .opt-letter { color: var(--primary-light); }
+.clasif-opt[data-v="B"] .opt-letter { color: var(--success); }
+.clasif-opt[data-v="C"] .opt-letter { color: var(--danger); }
+
+/* ── Flujo autorización ── */
+.auth-flow { display: flex; align-items: center; gap: 0; margin-bottom: 16px; }
+.auth-step-item { flex: 1; }
+.auth-step-inner { display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+.auth-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; border: 2px solid var(--gray-200); background: #fff; color: var(--gray-300); }
+.auth-circle.done { background: var(--success-pale); border-color: var(--success); color: var(--success); }
+.auth-circle.current { background: var(--warning-pale); border-color: var(--warning); color: var(--warning); }
+.auth-circle.rejected { background: var(--danger-pale); border-color: var(--danger); color: var(--danger); }
+.auth-step-name { font-size: 11px; color: var(--gray-500); font-weight: 500; }
+.auth-step-status { font-size: 10px; }
+.auth-connector { width: 40px; height: 2px; background: var(--gray-200); flex-shrink: 0; margin-bottom: 22px; }
+.auth-connector.done { background: var(--success); }
+
+/* ── Criterios info ── */
+.criterios-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.criterio-card { border-radius: var(--radius-lg); padding: 14px; }
+.criterio-card.A { background: var(--primary-pale); border: 1px solid rgba(37,99,168,.2); }
+.criterio-card.B { background: var(--success-pale); border: 1px solid rgba(26,122,74,.2); }
+.criterio-card.C { background: var(--danger-pale); border: 1px solid rgba(192,57,43,.2); }
+.criterio-header { font-size: 13px; font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.criterio-item { font-size: 12px; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,.05); display: flex; align-items: flex-start; gap: 6px; }
+.criterio-item:last-child { border-bottom: none; }
+
+/* ── Tabs ── */
+.tabs { display: flex; gap: 0; border-bottom: 1px solid var(--gray-200); margin-bottom: 18px; }
+.tab { padding: 10px 18px; font-size: 13px; cursor: pointer; color: var(--gray-500); border-bottom: 2px solid transparent; font-weight: 500; transition: all .15s; display: flex; align-items: center; gap: 6px; }
+.tab:hover { color: var(--gray-900); }
+.tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+/* ── Reporte ── */
+.reporte-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.bar-row { margin-bottom: 12px; }
+.bar-label { display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; }
+.bar-track { height: 18px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 4px; transition: width .6s ease; }
+.donut-wrap { display: flex; align-items: center; justify-content: center; gap: 24px; padding: 12px 0; }
+.donut-legend { display: flex; flex-direction: column; gap: 8px; }
+.legend-item { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── Empty state ── */
+.empty-state { padding: 48px; text-align: center; color: var(--gray-500); }
+.empty-state i { font-size: 36px; margin-bottom: 12px; display: block; opacity: .4; }
+.empty-state p { font-size: 14px; }
+
+/* ── Loading ── */
+.loading { text-align: center; padding: 48px; color: var(--gray-500); }
+.loading i { font-size: 24px; animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Toast ── */
+.toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+.toast { background: var(--gray-900); color: #fff; padding: 12px 16px; border-radius: var(--radius); font-size: 13px; display: flex; align-items: center; gap: 8px; box-shadow: var(--shadow-md); animation: slideUp .2s ease; min-width: 200px; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ── Pendientes ── */
+.pend-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 10px; transition: box-shadow .15s; }
+.pend-card:hover { box-shadow: var(--shadow); }
+.pend-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.pend-card-name { font-size: 14px; font-weight: 600; }
+.pend-card-meta { font-size: 12px; color: var(--gray-500); display: flex; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+.pend-card-comment { font-size: 12px; color: var(--gray-700); background: var(--gray-50); padding: 8px 10px; border-radius: var(--radius); margin-bottom: 10px; border-left: 3px solid var(--gray-200); }
+.pend-actions { display: flex; gap: 8px; }
+.locked-msg { font-size: 11px; color: var(--gray-500); background: var(--gray-50); padding: 6px 10px; border-radius: var(--radius); display: inline-flex; align-items: center; gap: 6px; }
+
+/* ── Detalle ── */
+.detail-section { margin-bottom: 20px; }
+.detail-section-title { font-size: 11px; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.detail-item { }
+.detail-item-label { font-size: 11px; color: var(--gray-500); margin-bottom: 2px; }
+.detail-item-val { font-size: 13px; color: var(--gray-900); font-weight: 500; }
+.tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.tag { background: var(--gray-100); color: var(--gray-700); padding: 3px 8px; border-radius: 4px; font-size: 11px; }
+
+/* ── Usuarios ── */
+.rol-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; background: var(--gray-100); color: var(--gray-700); }
+
+/* ── Responsive misc ── */
+.hidden { display: none !important; }
+.text-muted { color: var(--gray-500); }
+.fw500 { font-weight: 500; }
+.mono { font-family: var(--mono); }
+.divider { border: none; border-top: 1px solid var(--gray-100); margin: 16px 0; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-page" class="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="brand">FYRESA</div>
+      <div class="sub">Sistema de Recursos Humanos</div>
+    </div>
+    <h2>Evaluaciones de Salida</h2>
+    <div id="login-error" class="error-msg"><i class="fa fa-circle-exclamation"></i> <span id="login-error-msg"></span></div>
+    <div class="form-group">
+      <label class="form-label">Correo electrónico</label>
+      <input class="form-input" type="email" id="login-email" placeholder="correo@fyresa.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Contraseña</label>
+      <input class="form-input" type="password" id="login-pass" placeholder="••••••••">
+    </div>
+    <button class="btn btn-primary btn-full" onclick="doLogin()"><i class="fa fa-arrow-right-to-bracket"></i> Iniciar sesión</button>
+    <p style="font-size:11px;color:var(--gray-500);margin-top:16px;text-align:center">
+      Demo: supervisor@fyresa.com / fyresa2026
+    </p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app" class="app hidden">
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      <div class="name">FYRESA</div>
+      <div class="tagline">Evaluaciones de salida</div>
+    </div>
+    <div class="sidebar-section">Principal</div>
+    <div class="nav-item active" data-view="gestion" onclick="navTo('gestion',this)">
+      <i class="fa fa-table-list"></i> Gestión
+    </div>
+    <div class="nav-item" data-view="pendientes" onclick="navTo('pendientes',this)" id="nav-pendientes">
+      <i class="fa fa-clock"></i> Pendientes
+    </div>
+    <div class="nav-item" data-view="reportes" onclick="navTo('reportes',this)">
+      <i class="fa fa-chart-pie"></i> Reportes
+    </div>
+    <div class="sidebar-section">Administración</div>
+    <div class="nav-item" data-view="criterios" onclick="navTo('criterios',this)">
+      <i class="fa fa-list-check"></i> Criterios A/B/C
+    </div>
+    <div class="nav-item" id="nav-usuarios" data-view="usuarios" onclick="navTo('usuarios',this)">
+      <i class="fa fa-users"></i> Usuarios
+    </div>
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-initials">--</div>
+      <div>
+        <div class="user-name" id="user-name">–</div>
+        <div class="user-rol" id="user-rol">–</div>
+      </div>
+      <button class="logout-btn" onclick="doLogout()" title="Cerrar sesión"><i class="fa fa-right-from-bracket"></i></button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="topbar-title">Gestión</div>
+        <div class="topbar-sub" id="topbar-sub">Control de evaluaciones de salida</div>
+      </div>
+      <div style="font-size:12px;color:var(--gray-500)" id="topbar-date"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- GESTIÓN -->
+      <div id="view-gestion">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb"><span>Inicio</span> <i class="fa fa-chevron-right" style="font-size:9px"></i> Evaluaciones</div>
+            <div class="page-title">Evaluaciones de salida</div>
+          </div>
+          <button class="btn btn-primary" id="btn-nueva" onclick="openNueva()"><i class="fa fa-plus"></i> Nueva evaluación</button>
+        </div>
+        <div class="stats-grid" id="stats-grid">
+          <div class="stat-card stat-a"><div class="stat-label"><i class="fa fa-star" style="color:var(--primary-light)"></i>Jugador A</div><div class="stat-num" id="st-a">–</div><div class="stat-sub">Alto rendimiento</div></div>
+          <div class="stat-card stat-b"><div class="stat-label"><i class="fa fa-circle-check" style="color:var(--success)"></i>Jugador B</div><div class="stat-num" id="st-b">–</div><div class="stat-sub">Rendimiento estándar</div></div>
+          <div class="stat-card stat-c"><div class="stat-label"><i class="fa fa-triangle-exclamation" style="color:var(--danger)"></i>Jugador C</div><div class="stat-num" id="st-c">–</div><div class="stat-sub">Bajo rendimiento</div></div>
+          <div class="stat-card stat-p"><div class="stat-label"><i class="fa fa-hourglass-half" style="color:var(--warning)"></i>Pendientes</div><div class="stat-num" id="st-p">–</div><div class="stat-sub">Sin autorización total</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title"><i class="fa fa-table-list"></i> Registros</div>
+            <div class="filters">
+              <select class="filter-input" id="f-clasif" onchange="loadEvals()">
+                <option value="">Todas las clasificaciones</option>
+                <option value="A">Jugador A</option>
+                <option value="B">Jugador B</option>
+                <option value="C">Jugador C</option>
+              </select>
+              <select class="filter-input" id="f-estatus" onchange="loadEvals()">
+                <option value="">Todos los estatus</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en_proceso">En proceso</option>
+                <option value="autorizado">Autorizado</option>
+                <option value="rechazado">Rechazado</option>
+              </select>
+              <input type="date" class="filter-input" id="f-desde" onchange="loadEvals()">
+              <input type="date" class="filter-input" id="f-hasta" onchange="loadEvals()">
+              <button class="btn btn-outline btn-sm" onclick="clearFilters()"><i class="fa fa-x"></i> Limpiar</button>
+            </div>
+          </div>
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>Acciones</th><th>Folio</th><th>Empleado</th><th>Cargo</th><th>Depto.</th>
+                  <th>Fecha baja</th><th>Motivo</th><th>Clasificación</th><th>Autorización</th><th>Supervisor</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-body"></tbody>
+            </table>
+          </div>
+          <div class="table-footer">
+            <span id="tabla-info">–</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PENDIENTES -->
+      <div id="view-pendientes" class="hidden">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb"><span>Inicio</span> <i class="fa fa-chevron-right" style="font-size:9px"></i> Pendientes</div>
+            <div class="page-title">Autorizaciones pendientes</div>
+          </div>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="setAuthTab('superintendente',this)"><i class="fa fa-user-tie"></i> Superintendente</div>
+          <div class="tab" onclick="setAuthTab('coord_construccion',this)"><i class="fa fa-helmet-safety"></i> Coord. Construcción</div>
+          <div class="tab" onclick="setAuthTab('coord_rrhh',this)"><i class="fa fa-people-group"></i> Coord. RRHH</div>
+        </div>
+        <div id="pend-list"></div>
+      </div>
+
+      <!-- REPORTES -->
+      <div id="view-reportes" class="hidden">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb"><span>Inicio</span> <i class="fa fa-chevron-right" style="font-size:9px"></i> Reportes</div>
+            <div class="page-title">Reportes y estadísticas</div>
+          </div>
+          <div style="display:flex;gap:8px">
+            <input type="date" class="filter-input" id="r-desde" onchange="loadReportes()">
+            <input type="date" class="filter-input" id="r-hasta" onchange="loadReportes()">
+          </div>
+        </div>
+        <div id="reporte-content"></div>
+      </div>
+
+      <!-- CRITERIOS -->
+      <div id="view-criterios" class="hidden">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb"><span>Inicio</span> <i class="fa fa-chevron-right" style="font-size:9px"></i> Criterios</div>
+            <div class="page-title">Criterios de clasificación A / B / C</div>
+          </div>
+          <button class="btn btn-primary" onclick="openNuevoCriterio()"><i class="fa fa-plus"></i> Agregar criterio</button>
+        </div>
+        <div id="criterios-content"></div>
+      </div>
+
+      <!-- USUARIOS -->
+      <div id="view-usuarios" class="hidden">
+        <div class="page-header">
+          <div>
+            <div class="breadcrumb"><span>Inicio</span> <i class="fa fa-chevron-right" style="font-size:9px"></i> Usuarios</div>
+            <div class="page-title">Gestión de usuarios</div>
+          </div>
+          <button class="btn btn-primary" onclick="openNuevoUser()"><i class="fa fa-plus"></i> Nuevo usuario</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Registrado</th></tr></thead>
+            <tbody id="usuarios-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── MODAL NUEVA EVALUACIÓN ─── -->
+<div class="modal-backdrop" id="modal-nueva">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <h3 id="modal-nueva-title"><i class="fa fa-clipboard-list"></i> Nueva evaluación de salida</h3>
+      <button class="modal-close" onclick="closeModal('modal-nueva')"><i class="fa fa-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-id">
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px" class="mb-4">
+        <div>
+          <label class="form-label">Nombre del empleado *</label>
+          <input class="form-input" id="n-nombre" placeholder="Nombre completo">
+        </div>
+        <div>
+          <label class="form-label">N° empleado</label>
+          <input class="form-input" id="n-num" placeholder="Ej. 4210">
+        </div>
+        <div>
+          <label class="form-label">Fecha de baja *</label>
+          <input class="form-input" type="date" id="n-fecha">
+        </div>
+      </div>
+      <div class="form-row mb-4">
+        <div>
+          <label class="form-label">Cargo / puesto *</label>
+          <input class="form-input" id="n-cargo" placeholder="Ej. Tornero especialista">
+        </div>
+        <div>
+          <label class="form-label">Departamento</label>
+          <select class="form-input" id="n-depto">
+            <option value="">Seleccionar...</option>
+            <option>Producción</option><option>Construcción</option><option>Mantenimiento</option>
+            <option>Administración</option><option>RRHH</option><option>Seguridad</option><option>Otro</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Motivo de salida *</label>
+        <select class="form-input" id="n-motivo">
+          <option value="">Seleccionar motivo...</option>
+          <option>Renuncia voluntaria</option>
+          <option>Término de contrato</option>
+          <option>Despido justificado</option>
+          <option>Despido injustificado</option>
+          <option>Mutuo acuerdo</option>
+          <option>Jubilación</option>
+          <option>Incapacidad permanente</option>
+          <option>Fallecimiento</option>
+        </select>
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Clasificación del empleado * <span style="font-weight:400;color:var(--gray-500)">(evaluación del supervisor directo)</span></label>
+        <div class="clasif-opts" style="margin-top:8px">
+          <div class="clasif-opt" data-v="A" onclick="selClasif('A')">
+            <div class="opt-letter">A</div>
+            <div class="opt-label">Jugador A</div>
+            <div class="opt-desc">Alto rendimiento · Reemplazar difícil</div>
+          </div>
+          <div class="clasif-opt" data-v="B" onclick="selClasif('B')">
+            <div class="opt-letter">B</div>
+            <div class="opt-label">Jugador B</div>
+            <div class="opt-desc">Rendimiento estándar · Reemplazable</div>
+          </div>
+          <div class="clasif-opt" data-v="C" onclick="selClasif('C')">
+            <div class="opt-letter">C</div>
+            <div class="opt-label">Jugador C</div>
+            <div class="opt-desc">Bajo rendimiento · Oportunidad mejora</div>
+          </div>
+        </div>
+        <input type="hidden" id="n-clasif">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Comentarios generales del supervisor</label>
+        <textarea class="form-input" id="n-comentarios" placeholder="Desempeño general durante su estancia, contexto de la salida..."></textarea>
+      </div>
+      <div class="form-row mb-4">
+        <div>
+          <label class="form-label">Fortalezas destacadas</label>
+          <input class="form-input" id="n-fortalezas" placeholder="Ej: Técnica, liderazgo, puntualidad">
+          <div class="form-hint">Separa por comas</div>
+        </div>
+        <div>
+          <label class="form-label">Áreas de mejora</label>
+          <input class="form-input" id="n-mejora" placeholder="Ej: Comunicación, planeación">
+          <div class="form-hint">Separa por comas</div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;padding:12px;background:var(--gray-50);border-radius:var(--radius);margin-bottom:16px">
+        <input type="checkbox" id="n-recom" style="width:16px;height:16px;cursor:pointer">
+        <label for="n-recom" style="font-size:13px;cursor:pointer">¿Recomendarías volver a contratar a este empleado?</label>
+      </div>
+      <div style="background:var(--primary-pale);border-radius:var(--radius);padding:12px;font-size:12px;color:var(--primary);border-left:3px solid var(--primary-light)">
+        <i class="fa fa-circle-info"></i> Al guardar, la evaluación iniciará el flujo de autorización:
+        <strong>Superintendente → Coordinador de Construcción → Coordinador de RRHH</strong>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-nueva')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarEval()"><i class="fa fa-floppy-disk"></i> Guardar y enviar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE -->
+<div class="modal-backdrop" id="modal-detalle">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <h3 id="detalle-titulo">Detalle de evaluación</h3>
+      <button class="modal-close" onclick="closeModal('modal-detalle')"><i class="fa fa-x"></i></button>
+    </div>
+    <div class="modal-body" id="detalle-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-detalle')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL CRITERIO -->
+<div class="modal-backdrop" id="modal-criterio">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nuevo criterio de clasificación</h3>
+      <button class="modal-close" onclick="closeModal('modal-criterio')"><i class="fa fa-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="mb-4">
+        <label class="form-label">Clasificación *</label>
+        <div class="clasif-opts" style="margin-top:8px">
+          <div class="clasif-opt" data-v="A" onclick="selClasifC('A')"><div class="opt-letter">A</div></div>
+          <div class="clasif-opt" data-v="B" onclick="selClasifC('B')"><div class="opt-letter">B</div></div>
+          <div class="clasif-opt" data-v="C" onclick="selClasifC('C')"><div class="opt-letter">C</div></div>
+        </div>
+        <input type="hidden" id="c-clasif">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Nombre del criterio *</label>
+        <input class="form-input" id="c-nombre" placeholder="Ej: Desempeño sobresaliente">
+      </div>
+      <div class="mb-4">
+        <label class="form-label">Descripción</label>
+        <textarea class="form-input" id="c-desc" placeholder="Descripción detallada del criterio..." rows="3"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-criterio')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarCriterio()"><i class="fa fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL USUARIO -->
+<div class="modal-backdrop" id="modal-usuario">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Nuevo usuario</h3>
+      <button class="modal-close" onclick="closeModal('modal-usuario')"><i class="fa fa-x"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row mb-4">
+        <div>
+          <label class="form-label">Nombre completo *</label>
+          <input class="form-input" id="u-nombre" placeholder="Nombre">
+        </div>
+        <div>
+          <label class="form-label">Correo electrónico *</label>
+          <input class="form-input" type="email" id="u-email" placeholder="correo@fyresa.com">
+        </div>
+      </div>
+      <div class="form-row mb-4">
+        <div>
+          <label class="form-label">Contraseña *</label>
+          <input class="form-input" type="password" id="u-pass" placeholder="Mínimo 6 caracteres">
+        </div>
+        <div>
+          <label class="form-label">Rol *</label>
+          <select class="form-input" id="u-rol">
+            <option value="">Seleccionar rol...</option>
+            <option value="supervisor">Supervisor</option>
+            <option value="superintendente">Superintendente</option>
+            <option value="coord_construccion">Coord. Construcción</option>
+            <option value="coord_rrhh">Coord. RRHH</option>
+            <option value="admin">Administrador</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-usuario')">Cancelar</button>
+      <button class="btn btn-primary" onclick="guardarUsuario()"><i class="fa fa-floppy-disk"></i> Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AUTORIZAR CON FIRMA -->
+<div class="modal-backdrop" id="modal-auth">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <h3 id="auth-modal-title">Autorizar evaluación</h3>
+      <button class="modal-close" onclick="closeModal('modal-auth')"><i class="fa fa-x"></i></button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Info de la evaluación -->
+      <div id="auth-eval-info" style="background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);padding:14px;margin-bottom:18px;font-size:13px"></div>
+
+      <!-- Comentario -->
+      <div class="mb-4">
+        <label class="form-label">Comentario <span style="font-weight:400;color:var(--gray-500)">(opcional)</span></label>
+        <textarea class="form-input" id="auth-comentario" rows="2" placeholder="Observaciones sobre esta autorización..."></textarea>
+      </div>
+
+      <!-- Firma digital -->
+      <div class="mb-4">
+        <label class="form-label">
+          <i class="fa fa-pen-nib" style="color:var(--primary-light)"></i>
+          Firma del autorizador <span style="color:var(--danger)">*</span>
+        </label>
+        <div style="background:var(--gray-50);border:1.5px solid var(--gray-200);border-radius:var(--radius);padding:10px;margin-top:6px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <span style="font-size:11px;color:var(--gray-500)">Firme con el mouse o dedo en el área de abajo</span>
+            <button type="button" onclick="clearSignature()" style="background:none;border:1px solid var(--gray-200);border-radius:4px;padding:3px 10px;font-size:11px;cursor:pointer;color:var(--gray-500);display:flex;align-items:center;gap:4px">
+              <i class="fa fa-eraser"></i> Borrar firma
+            </button>
+          </div>
+          <canvas id="signature-pad"
+            style="display:block;width:100%;height:160px;background:#fff;border:1px dashed var(--gray-300);border-radius:6px;cursor:crosshair;touch-action:none"
+          ></canvas>
+          <div id="sig-warning" style="display:none;color:var(--danger);font-size:11px;margin-top:6px">
+            <i class="fa fa-circle-exclamation"></i> La firma es obligatoria para autorizar
+          </div>
+        </div>
+      </div>
+
+      <!-- Nota legal -->
+      <div style="background:var(--primary-pale);border-left:3px solid var(--primary-light);border-radius:var(--radius);padding:10px 12px;font-size:11px;color:var(--primary)">
+        <i class="fa fa-shield-halved"></i>
+        Al firmar, confirma que ha revisado la evaluación y emite su decisión con pleno conocimiento.
+        La firma quedará registrada junto con la fecha, hora y usuario en el sistema.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('modal-auth')">Cancelar</button>
+      <button class="btn btn-danger" id="btn-rechazar" onclick="confirmarAuth('rechazado')"><i class="fa fa-x"></i> Rechazar</button>
+      <button class="btn btn-success" id="btn-autorizar" onclick="confirmarAuth('autorizado')"><i class="fa fa-signature"></i> Firmar y autorizar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toasts"></div>
+
+<script>
+const API = '';
+let token = localStorage.getItem('token');
+let currentUser = JSON.parse(localStorage.getItem('user') || 'null');
+let currentView = 'gestion';
+let authTabRol = 'superintendente';
+let authEvalId = null;
+
+// ─── Utilidades ───────────────────────────────────────────────────────────────
+function apiFetch(url, opts = {}) {
+  return fetch(API + url, {
+    ...opts,
+    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token, ...(opts.headers||{}) }
+  }).then(r => r.json());
+}
+
+function toast(msg, type = '') {
+  const c = document.getElementById('toasts');
+  const el = document.createElement('div');
+  el.className = 'toast ' + type;
+  el.innerHTML = `<i class="fa ${type==='success'?'fa-check-circle':type==='error'?'fa-circle-xmark':'fa-circle-info'}"></i> ${msg}`;
+  c.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+
+function getBadgeClasif(c) {
+  const map = { A:'badge-a', B:'badge-b', C:'badge-c' };
+  return `<span class="badge ${map[c]}">Jugador ${c}</span>`;
+}
+
+function getBadgeEstatus(e) {
+  const map = { pendiente:['badge-pend','fa-clock','Pendiente'], en_proceso:['badge-proceso','fa-spinner','En proceso'], autorizado:['badge-auto','fa-check','Autorizado'], rechazado:['badge-rech','fa-x','Rechazado'] };
+  const [cls,ico,lbl] = map[e] || ['','',''+e];
+  return `<span class="badge ${cls}"><i class="fa ${ico}"></i> ${lbl}</span>`;
+}
+
+function getRolLabel(r) {
+  const m = { supervisor:'Supervisor', superintendente:'Superintendente', coord_construccion:'Coord. Construcción', coord_rrhh:'Coord. RRHH', admin:'Administrador' };
+  return m[r] || r;
+}
+
+function fmtDate(d) { if(!d) return '–'; return new Date(d+'T00:00:00').toLocaleDateString('es-MX',{day:'2-digit',month:'short',year:'numeric'}); }
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('login-email').value;
+  const pass = document.getElementById('login-pass').value;
+  const res = await fetch('/api/login', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email,password:pass}) });
+  const data = await res.json();
+  if (!res.ok) {
+    const el = document.getElementById('login-error');
+    document.getElementById('login-error-msg').textContent = data.error;
+    el.style.display = 'flex';
+    return;
+  }
+  token = data.token;
+  currentUser = data.user;
+  localStorage.setItem('token', token);
+  localStorage.setItem('user', JSON.stringify(currentUser));
+  initApp();
+}
+
+document.getElementById('login-pass').addEventListener('keydown', e => { if(e.key==='Enter') doLogin(); });
+
+function doLogout() {
+  token = null; currentUser = null;
+  localStorage.removeItem('token'); localStorage.removeItem('user');
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('login-page').classList.remove('hidden');
+}
+
+function initApp() {
+  document.getElementById('login-page').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('user-name').textContent = currentUser.nombre;
+  document.getElementById('user-rol').textContent = getRolLabel(currentUser.rol);
+  document.getElementById('user-initials').textContent = currentUser.nombre.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+  // Permisos
+  const canAdmin = currentUser.rol === 'admin';
+  if (!canAdmin) document.getElementById('nav-usuarios').classList.add('hidden');
+  // Solo supervisores y admin crean evaluaciones
+  if (!['supervisor','admin'].includes(currentUser.rol)) document.getElementById('btn-nueva').classList.add('hidden');
+  // Fecha
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('es-MX',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  loadEvals();
+  loadPendientesCount();
+}
+
+if (token && currentUser) initApp();
+
+// ─── Navegación ───────────────────────────────────────────────────────────────
+const VIEW_TITLES = { gestion:'Gestión', pendientes:'Pendientes de autorizar', reportes:'Reportes', criterios:'Criterios A/B/C', usuarios:'Usuarios' };
+
+function navTo(view, el) {
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('[id^="view-"]').forEach(v => v.classList.add('hidden'));
+  document.getElementById('view-'+view).classList.remove('hidden');
+  document.getElementById('topbar-title').textContent = VIEW_TITLES[view] || view;
+  currentView = view;
+  if (view === 'gestion') loadEvals();
+  if (view === 'pendientes') loadPendientes();
+  if (view === 'reportes') loadReportes();
+  if (view === 'criterios') loadCriterios();
+  if (view === 'usuarios') loadUsuarios();
+}
+
+// ─── Gestión ──────────────────────────────────────────────────────────────────
+async function loadEvals() {
+  const clasif = document.getElementById('f-clasif').value;
+  const estatus = document.getElementById('f-estatus').value;
+  const desde = document.getElementById('f-desde').value;
+  const hasta = document.getElementById('f-hasta').value;
+  const params = new URLSearchParams();
+  if (clasif) params.set('clasificacion', clasif);
+  if (estatus) params.set('estatus', estatus);
+  if (desde) params.set('desde', desde);
+  if (hasta) params.set('hasta', hasta);
+  const data = await apiFetch('/api/evaluaciones?' + params);
+  const tbody = document.getElementById('tabla-body');
+  if (!Array.isArray(data) || !data.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty-state"><i class="fa fa-inbox"></i><p>No hay evaluaciones registradas</p></div></td></tr>';
+    ['a','b','c','p'].forEach(k => document.getElementById('st-'+k).textContent = '0');
+    document.getElementById('tabla-info').textContent = 'Sin registros';
+    return;
+  }
+  tbody.innerHTML = data.map(r => {
+    const authPct = Math.round((r.auth_count / 3) * 100);
+    return `<tr>
+      <td>
+        <button class="btn btn-outline btn-sm" onclick="verDetalle(${r.id})" title="Ver detalle"><i class="fa fa-eye"></i></button>
+      </td>
+      <td><span class="mono" style="font-size:12px">#${r.folio}</span></td>
+      <td><div style="font-weight:500">${r.nombre}</div><div style="font-size:11px;color:var(--gray-500)">${r.numero_empleado}</div></td>
+      <td>${r.cargo}</td>
+      <td>${r.departamento || '–'}</td>
+      <td style="white-space:nowrap">${fmtDate(r.fecha_baja)}</td>
+      <td style="max-width:140px"><div style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.motivo}">${r.motivo}</div></td>
+      <td>${getBadgeClasif(r.clasificacion)}</td>
+      <td>
+        ${getBadgeEstatus(r.estatus)}
+        <div style="margin-top:4px;height:4px;background:var(--gray-100);border-radius:2px;width:80px">
+          <div style="height:100%;width:${authPct}%;background:${r.estatus==='autorizado'?'var(--success)':r.estatus==='rechazado'?'var(--danger)':'var(--warning)'};border-radius:2px"></div>
+        </div>
+      </td>
+      <td style="font-size:12px">${r.supervisor_nombre||'–'}</td>
+    </tr>`;
+  }).join('');
+  const cA = data.filter(r=>r.clasificacion==='A').length;
+  const cB = data.filter(r=>r.clasificacion==='B').length;
+  const cC = data.filter(r=>r.clasificacion==='C').length;
+  const cP = data.filter(r=>r.estatus!=='autorizado'&&r.estatus!=='rechazado').length;
+  document.getElementById('st-a').textContent = cA;
+  document.getElementById('st-b').textContent = cB;
+  document.getElementById('st-c').textContent = cC;
+  document.getElementById('st-p').textContent = cP;
+  document.getElementById('tabla-info').textContent = `Mostrando ${data.length} registro${data.length!==1?'s':''}`;
+}
+
+function clearFilters() {
+  ['f-clasif','f-estatus','f-desde','f-hasta'].forEach(id => {
+    const el = document.getElementById(id);
+    el.value = '';
+  });
+  loadEvals();
+}
+
+// ─── Nueva evaluación ─────────────────────────────────────────────────────────
+let selectedClasif = null;
+function selClasif(v) {
+  selectedClasif = v;
+  document.querySelectorAll('#modal-nueva .clasif-opt').forEach(el => {
+    el.classList.remove('sel-A','sel-B','sel-C');
+    if (el.dataset.v === v) el.classList.add('sel-'+v);
+  });
+  document.getElementById('n-clasif').value = v;
+}
+
+function openNueva() {
+  document.getElementById('edit-id').value = '';
+  document.getElementById('modal-nueva-title').innerHTML = '<i class="fa fa-clipboard-list"></i> Nueva evaluación de salida';
+  ['n-nombre','n-num','n-cargo','n-comentarios','n-fortalezas','n-mejora'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('n-fecha').value = '';
+  document.getElementById('n-motivo').value = '';
+  document.getElementById('n-depto').value = '';
+  document.getElementById('n-recom').checked = false;
+  document.querySelectorAll('#modal-nueva .clasif-opt').forEach(el => el.classList.remove('sel-A','sel-B','sel-C'));
+  document.getElementById('n-clasif').value = '';
+  selectedClasif = null;
+  openModal('modal-nueva');
+}
+
+async function guardarEval() {
+  const nombre = document.getElementById('n-nombre').value.trim();
+  const cargo = document.getElementById('n-cargo').value.trim();
+  const fecha = document.getElementById('n-fecha').value;
+  const motivo = document.getElementById('n-motivo').value;
+  const clasif = document.getElementById('n-clasif').value;
+  if (!nombre || !cargo || !fecha || !motivo || !clasif) { toast('Completa todos los campos requeridos', 'error'); return; }
+  const body = {
+    nombre, cargo, fecha_baja: fecha, motivo, clasificacion: clasif,
+    numero_empleado: document.getElementById('n-num').value,
+    departamento: document.getElementById('n-depto').value,
+    comentarios: document.getElementById('n-comentarios').value,
+    fortalezas: document.getElementById('n-fortalezas').value,
+    areas_mejora: document.getElementById('n-mejora').value,
+    recomendaria: document.getElementById('n-recom').checked
+  };
+  const editId = document.getElementById('edit-id').value;
+  let res;
+  if (editId) {
+    res = await apiFetch('/api/evaluaciones/'+editId, { method:'PUT', body: JSON.stringify(body) });
+  } else {
+    res = await apiFetch('/api/evaluaciones', { method:'POST', body: JSON.stringify(body) });
+  }
+  if (res.error) { toast(res.error, 'error'); return; }
+  toast('Evaluación guardada correctamente', 'success');
+  closeModal('modal-nueva');
+  loadEvals();
+  loadPendientesCount();
+}
+
+// ─── Detalle ──────────────────────────────────────────────────────────────────
+async function verDetalle(id) {
+  const r = await apiFetch('/api/evaluaciones/'+id);
+  document.getElementById('detalle-titulo').innerHTML = `<i class="fa fa-user-circle"></i> ${r.nombre} <span style="font-size:13px;font-weight:400;color:var(--gray-500)">· Folio #${r.folio}</span>`;
+  const ROLES = ['superintendente','coord_construccion','coord_rrhh'];
+  const LABELS = { superintendente:'Superintendente', coord_construccion:'Coord. Construcción', coord_rrhh:'Coord. RRHH' };
+  const authMap = {};
+  (r.autorizaciones||[]).forEach(a => { authMap[a.rol] = a; });
+  let authFlow = '<div class="auth-flow">';
+  ROLES.forEach((rol, i) => {
+    const a = authMap[rol];
+    const done = a && a.decision === 'autorizado';
+    const rejected = a && a.decision === 'rechazado';
+    const isNext = !done && !rejected && (i===0 || (authMap[ROLES[i-1]] && authMap[ROLES[i-1]].decision==='autorizado'));
+    let circleClass = '', icon = i+1;
+    if (done) { circleClass='done'; icon='<i class="fa fa-check"></i>'; }
+    else if (rejected) { circleClass='rejected'; icon='<i class="fa fa-x"></i>'; }
+    else if (isNext) { circleClass='current'; }
+    const statusTxt = done?`<span style="color:var(--success);font-size:10px">Autorizado</span>`:rejected?`<span style="color:var(--danger);font-size:10px">Rechazado</span>`:isNext?`<span style="color:var(--warning);font-size:10px">Pendiente</span>`:`<span style="color:var(--gray-300);font-size:10px">En espera</span>`;
+    if (i>0) authFlow += `<div class="auth-connector ${done||rejected?'done':''}"></div>`;
+    authFlow += `<div class="auth-step-item"><div class="auth-step-inner">
+      <div class="auth-circle ${circleClass}">${icon}</div>
+      <div class="auth-step-name">${LABELS[rol]}</div>
+      ${statusTxt}
+      ${a&&a.autorizador_nombre?`<div style="font-size:10px;color:var(--gray-500)">${a.autorizador_nombre}</div>`:''}
+    </div></div>`;
+  });
+  authFlow += '</div>';
+  const tags = (str) => (str||'').split(',').filter(Boolean).map(t=>`<span class="tag">${t.trim()}</span>`).join('');
+  document.getElementById('detalle-body').innerHTML = `
+    <div class="detail-section">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px">
+        <div style="width:48px;height:48px;border-radius:50%;background:var(--primary-pale);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:var(--primary);flex-shrink:0">${r.nombre.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase()}</div>
+        <div>
+          <div style="font-size:16px;font-weight:600">${r.nombre}</div>
+          <div style="font-size:12px;color:var(--gray-500)">${r.cargo} ${r.departamento?'· '+r.departamento:''} · N° ${r.numero_empleado||'–'}</div>
+        </div>
+        <div style="margin-left:auto">${getBadgeClasif(r.clasificacion)}</div>
+      </div>
+      <div class="detail-grid">
+        <div class="detail-item"><div class="detail-item-label">Fecha de baja</div><div class="detail-item-val">${fmtDate(r.fecha_baja)}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Motivo</div><div class="detail-item-val">${r.motivo}</div></div>
+        <div class="detail-item"><div class="detail-item-label">Supervisor</div><div class="detail-item-val">${r.supervisor_nombre||'–'}</div></div>
+        <div class="detail-item"><div class="detail-item-label">¿Se recontrata?</div><div class="detail-item-val">${r.recomendaria?'<span style="color:var(--success)"><i class="fa fa-check"></i> Sí</span>':'<span style="color:var(--danger)"><i class="fa fa-x"></i> No</span>'}</div></div>
+      </div>
+    </div>
+    ${r.comentarios?`<div class="detail-section"><div class="detail-section-title">Comentarios del supervisor</div><p style="font-size:13px;color:var(--gray-700);line-height:1.6">${r.comentarios}</p></div>`:''}
+    ${r.fortalezas?`<div class="detail-section"><div class="detail-section-title">Fortalezas</div><div class="tag-list">${tags(r.fortalezas)}</div></div>`:''}
+    ${r.areas_mejora?`<div class="detail-section"><div class="detail-section-title">Áreas de mejora</div><div class="tag-list">${tags(r.areas_mejora)}</div></div>`:''}
+    <div class="detail-section">
+      <div class="detail-section-title">Flujo de autorización</div>
+      ${authFlow}
+    </div>
+    ${(r.autorizaciones||[]).some(a=>a.comentario||a.firma)?`<div class="detail-section"><div class="detail-section-title">Firmas y comentarios</div>
+      ${(r.autorizaciones||[]).filter(a=>a.decision==='autorizado').map(a=>`
+        <div style="padding:12px;background:var(--gray-50);border:1px solid var(--gray-200);border-radius:var(--radius);margin-bottom:10px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+            <div>
+              <span style="font-size:12px;font-weight:600">${LABELS[a.rol]}</span>
+              <span style="font-size:11px;color:var(--gray-500);margin-left:8px">${a.autorizador_nombre||''}</span>
+            </div>
+            <span style="font-size:11px;color:var(--success)"><i class="fa fa-check-circle"></i> Autorizado · ${a.fecha?new Date(a.fecha).toLocaleString('es-MX',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}):''}</span>
+          </div>
+          ${a.firma?`<div style="background:#fff;border:1px solid var(--gray-200);border-radius:4px;padding:6px;text-align:center;margin-bottom:6px">
+            <div style="font-size:10px;color:var(--gray-500);margin-bottom:4px"><i class="fa fa-pen-nib"></i> Firma digital</div>
+            <img src="${a.firma}" style="max-height:80px;max-width:100%;object-fit:contain" alt="Firma">
+          </div>`:'<div style="font-size:11px;color:var(--gray-300);font-style:italic;margin-bottom:6px">Sin firma registrada</div>'}
+          ${a.comentario?`<div style="font-size:12px;color:var(--gray-700);border-top:1px solid var(--gray-200);padding-top:6px">${a.comentario}</div>`:''}
+        </div>`).join('')}
+    </div>`:''}
+  `;
+  openModal('modal-detalle');
+}
+
+// ─── Pendientes ───────────────────────────────────────────────────────────────
+async function loadPendientesCount() {
+  const data = await apiFetch('/api/pendientes?rol=superintendente');
+  const nav = document.getElementById('nav-pendientes');
+  const cnt = Array.isArray(data) ? data.length : 0;
+  nav.innerHTML = `<i class="fa fa-clock"></i> Pendientes ${cnt>0?`<span class="nav-badge">${cnt}</span>`:''}`;
+  nav.onclick = () => { navTo('pendientes', nav); };
+}
+
+async function loadPendientes() {
+  const list = document.getElementById('pend-list');
+  list.innerHTML = '<div class="loading"><i class="fa fa-spinner"></i></div>';
+  const data = await apiFetch('/api/pendientes');
+  if (!Array.isArray(data) || !data.length) {
+    list.innerHTML = '<div class="empty-state"><i class="fa fa-check-circle" style="color:var(--success)"></i><p>No hay autorizaciones pendientes para este rol</p></div>';
+    return;
+  }
+  const PREV = { superintendente: null, coord_construccion:'superintendente', coord_rrhh:'coord_construccion' };
+  list.innerHTML = data.map(r => {
+    const cf = r.clasificacion;
+    return `<div class="pend-card">
+      <div class="pend-card-header">
+        <div>
+          <div class="pend-card-name">${r.nombre}</div>
+        </div>
+        <div>${getBadgeClasif(cf)}</div>
+      </div>
+      <div class="pend-card-meta">
+        <span><i class="fa fa-briefcase"></i> ${r.cargo}</span>
+        <span><i class="fa fa-hashtag"></i> Folio ${r.folio}</span>
+        <span><i class="fa fa-calendar"></i> Baja: ${fmtDate(r.fecha_baja)}</span>
+        <span><i class="fa fa-door-open"></i> ${r.motivo}</span>
+      </div>
+      ${r.comentarios?`<div class="pend-card-comment">${r.comentarios}</div>`:''}
+      <div class="pend-actions">
+        <button class="btn btn-success btn-sm" onclick="openAuth(${r.id},'autorizado')"><i class="fa fa-check"></i> Autorizar</button>
+        <button class="btn btn-danger btn-sm" onclick="openAuth(${r.id},'rechazado')"><i class="fa fa-x"></i> Rechazar</button>
+        <button class="btn btn-outline btn-sm" onclick="verDetalle(${r.id})"><i class="fa fa-eye"></i> Ver detalle</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function setAuthTab(rol, el) {
+  authTabRol = rol;
+  document.querySelectorAll('.tabs .tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  loadPendientes();
+}
+
+// ─── Firma digital ────────────────────────────────────────────────────────────
+let sigCanvas, sigCtx, sigDrawing = false, sigHasData = false;
+let sigLastX = 0, sigLastY = 0;
+
+function initSignaturePad() {
+  sigCanvas = document.getElementById('signature-pad');
+  if (!sigCanvas) return;
+  sigCtx = sigCanvas.getContext('2d');
+  // Ajustar resolución al tamaño real CSS
+  const rect = sigCanvas.getBoundingClientRect();
+  sigCanvas.width = rect.width * window.devicePixelRatio;
+  sigCanvas.height = rect.height * window.devicePixelRatio;
+  sigCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  sigCtx.strokeStyle = '#1a1a1a';
+  sigCtx.lineWidth = 2;
+  sigCtx.lineCap = 'round';
+  sigCtx.lineJoin = 'round';
+  sigHasData = false;
+
+  function getPos(e) {
+    const r = sigCanvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  }
+  function startDraw(e) {
+    e.preventDefault();
+    sigDrawing = true;
+    const p = getPos(e);
+    sigLastX = p.x; sigLastY = p.y;
+    sigCtx.beginPath();
+    sigCtx.arc(p.x, p.y, 1, 0, Math.PI * 2);
+    sigCtx.fillStyle = '#1a1a1a';
+    sigCtx.fill();
+  }
+  function draw(e) {
+    if (!sigDrawing) return;
+    e.preventDefault();
+    const p = getPos(e);
+    sigCtx.beginPath();
+    sigCtx.moveTo(sigLastX, sigLastY);
+    sigCtx.lineTo(p.x, p.y);
+    sigCtx.stroke();
+    sigLastX = p.x; sigLastY = p.y;
+    sigHasData = true;
+    document.getElementById('sig-warning').style.display = 'none';
+  }
+  function stopDraw() { sigDrawing = false; }
+
+  sigCanvas.addEventListener('mousedown', startDraw);
+  sigCanvas.addEventListener('mousemove', draw);
+  sigCanvas.addEventListener('mouseup', stopDraw);
+  sigCanvas.addEventListener('mouseleave', stopDraw);
+  sigCanvas.addEventListener('touchstart', startDraw, { passive: false });
+  sigCanvas.addEventListener('touchmove', draw, { passive: false });
+  sigCanvas.addEventListener('touchend', stopDraw);
+}
+
+function clearSignature() {
+  if (!sigCtx) return;
+  const r = sigCanvas.getBoundingClientRect();
+  sigCtx.clearRect(0, 0, r.width * window.devicePixelRatio, r.height * window.devicePixelRatio);
+  sigHasData = false;
+}
+
+function getSignatureDataURL() {
+  if (!sigCanvas) return null;
+  return sigCanvas.toDataURL('image/png');
+}
+
+let pendDecision = null;
+function openAuth(id, decision) {
+  authEvalId = id;
+  pendDecision = decision;
+  document.getElementById('auth-modal-title').innerHTML = decision === 'autorizado'
+    ? '<i class="fa fa-signature" style="color:var(--success)"></i> Firmar y autorizar evaluación'
+    : '<i class="fa fa-x" style="color:var(--danger)"></i> Rechazar evaluación';
+
+  // Info de la evaluación en el modal
+  const ev = document.querySelector(`[onclick*="openAuth(${id},"]`)?.closest('.pend-card');
+  const nombre = ev?.querySelector('.pend-card-name')?.textContent || `#${id}`;
+  document.getElementById('auth-eval-info').innerHTML = `
+    <div style="font-weight:600;margin-bottom:4px">${nombre}</div>
+    <div style="color:var(--gray-500)">Folio ${id} · Decisión: <strong style="color:${decision==='autorizado'?'var(--success)':'var(--danger)'}">${decision==='autorizado'?'Autorizar':'Rechazar'}</strong></div>
+  `;
+
+  document.getElementById('auth-comentario').value = '';
+  document.getElementById('btn-autorizar').style.display = decision === 'autorizado' ? '' : 'none';
+  document.getElementById('btn-rechazar').style.display = decision === 'rechazado' ? '' : 'none';
+  document.getElementById('sig-warning').style.display = 'none';
+  openModal('modal-auth');
+  // Inicializar canvas después de que el modal sea visible
+  requestAnimationFrame(() => { requestAnimationFrame(() => { initSignaturePad(); }); });
+}
+
+async function confirmarAuth(decision) {
+  // Para autorizar, firma obligatoria
+  if (decision === 'autorizado' && !sigHasData) {
+    document.getElementById('sig-warning').style.display = 'block';
+    sigCanvas.style.borderColor = 'var(--danger)';
+    sigCanvas.style.boxShadow = '0 0 0 2px rgba(192,57,43,.2)';
+    setTimeout(() => {
+      sigCanvas.style.borderColor = '';
+      sigCanvas.style.boxShadow = '';
+    }, 2000);
+    return;
+  }
+  const comentario = document.getElementById('auth-comentario').value;
+  const firma = decision === 'autorizado' ? getSignatureDataURL() : null;
+  const res = await apiFetch('/api/autorizaciones', {
+    method: 'POST',
+    body: JSON.stringify({ evaluacion_id: authEvalId, decision, comentario, firma })
+  });
+  if (res.error) { toast(res.error, 'error'); return; }
+  toast(decision === 'autorizado' ? '✅ Evaluación autorizada con firma' : 'Evaluación rechazada', decision === 'autorizado' ? 'success' : 'error');
+  closeModal('modal-auth');
+  loadPendientes();
+  loadPendientesCount();
+  if (currentView === 'gestion') loadEvals();
+}
+
+// ─── Reportes ─────────────────────────────────────────────────────────────────
+async function loadReportes() {
+  const desde = document.getElementById('r-desde').value;
+  const hasta = document.getElementById('r-hasta').value;
+  const params = new URLSearchParams();
+  if (desde) params.set('desde', desde);
+  if (hasta) params.set('hasta', hasta);
+  const data = await apiFetch('/api/reportes/resumen?' + params);
+  const total = data.por_clasif.reduce((s,r)=>s+r.total,0) || 1;
+  const byClasif = { A:0, B:0, C:0 };
+  data.por_clasif.forEach(r => { byClasif[r.clasificacion] = r.total; });
+  const COLORS = { A:'var(--primary-light)', B:'var(--success)', C:'var(--danger)' };
+  const MOTIVO_COLORS = ['#1a3a5c','#2563a8','#3b82c4','#6baad6','#9ec8e8','#c2dff0','#e8f3fb'];
+  const ESTATUS_COLORS = { pendiente:'var(--warning)', en_proceso:'var(--purple)', autorizado:'var(--success)', rechazado:'var(--danger)' };
+  const recSi = (data.recomendaria.find(r=>r.recomendaria===1)?.total||0);
+  const recNo = (data.recomendaria.find(r=>r.recomendaria===0)?.total||0);
+  const recTotal = recSi + recNo || 1;
+
+  document.getElementById('reporte-content').innerHTML = `
+    <div class="reporte-grid" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa fa-chart-bar"></i> Clasificación de bajas</div></div>
+        <div style="padding:18px">
+          ${['A','B','C'].map(c=>`
+            <div class="bar-row">
+              <div class="bar-label"><span>Jugador ${c}</span><span style="font-weight:600;color:${COLORS[c]}">${byClasif[c]} (${Math.round(byClasif[c]/total*100)}%)</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.round(byClasif[c]/total*100)}%;background:${COLORS[c]}"></div></div>
+            </div>`).join('')}
+          <div style="font-size:11px;color:var(--gray-500);margin-top:8px">Total: ${total} evaluaciones</div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa fa-door-open"></i> Motivos de salida</div></div>
+        <div style="padding:18px">
+          ${data.por_motivo.slice(0,6).map((r,i)=>`
+            <div class="bar-row">
+              <div class="bar-label"><span style="font-size:12px">${r.motivo}</span><span style="font-weight:600;color:${MOTIVO_COLORS[i]}">${r.total}</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.total/total*100)}%;background:${MOTIVO_COLORS[i]}"></div></div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+    <div class="reporte-grid" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa fa-building"></i> Por departamento</div></div>
+        <div style="padding:18px">
+          ${data.por_dept.filter(r=>r.departamento).map((r,i)=>`
+            <div class="bar-row">
+              <div class="bar-label"><span style="font-size:12px">${r.departamento}</span><span style="font-weight:600">${r.total}</span></div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.round(r.total/total*100)}%;background:var(--primary-light)"></div></div>
+            </div>`).join('') || '<div class="empty-state" style="padding:1rem"><p>Sin departamentos registrados</p></div>'}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><i class="fa fa-thumbs-up"></i> Recontratación</div></div>
+        <div style="padding:18px;text-align:center">
+          <div style="font-size:48px;font-weight:300;color:var(--success);font-family:var(--mono)">${Math.round(recSi/recTotal*100)}%</div>
+          <div style="font-size:13px;color:var(--gray-500);margin-bottom:16px">de empleados son recomendados para recontratar</div>
+          <div style="display:flex;gap:16px;justify-content:center">
+            <div><div style="font-size:22px;font-weight:600;color:var(--success)">${recSi}</div><div style="font-size:11px;color:var(--gray-500)">Sí recontratar</div></div>
+            <div><div style="font-size:22px;font-weight:600;color:var(--danger)">${recNo}</div><div style="font-size:11px;color:var(--gray-500)">No recontratar</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title"><i class="fa fa-calendar-days"></i> Bajas por mes</div></div>
+      <div style="padding:18px">
+        ${renderMensual(data.mensual)}
+      </div>
+    </div>
+  `;
+}
+
+function renderMensual(mensual) {
+  if (!mensual.length) return '<div class="empty-state" style="padding:1rem"><p>Sin datos mensuales</p></div>';
+  const meses = [...new Set(mensual.map(r=>r.mes))].sort();
+  const byMes = {};
+  mensual.forEach(r => { if(!byMes[r.mes]) byMes[r.mes] = {A:0,B:0,C:0}; byMes[r.mes][r.clasificacion] = r.total; });
+  const maxV = Math.max(...meses.map(m=>(byMes[m].A||0)+(byMes[m].B||0)+(byMes[m].C||0))) || 1;
+  return `<div style="display:flex;align-items:flex-end;gap:10px;height:120px;padding:0 0 8px">
+    ${meses.map(m=>{
+      const d=byMes[m]; const tot=(d.A||0)+(d.B||0)+(d.C||0);
+      const h=Math.round(tot/maxV*100);
+      return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:2px">
+        <div style="font-size:10px;color:var(--gray-500)">${tot}</div>
+        <div style="width:100%;height:${h}px;background:var(--primary-pale);border-radius:3px 3px 0 0;display:flex;flex-direction:column-reverse;overflow:hidden">
+          ${d.C?`<div style="height:${Math.round((d.C||0)/tot*100)}%;background:var(--danger);opacity:.7"></div>`:''}
+          ${d.B?`<div style="height:${Math.round((d.B||0)/tot*100)}%;background:var(--success);opacity:.7"></div>`:''}
+          ${d.A?`<div style="height:${Math.round((d.A||0)/tot*100)}%;background:var(--primary-light);opacity:.7"></div>`:''}
+        </div>
+        <div style="font-size:9px;color:var(--gray-500);text-align:center">${m.slice(5)}</div>
+      </div>`;
+    }).join('')}
+  </div>
+  <div style="display:flex;gap:16px;justify-content:center;margin-top:8px;font-size:11px">
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--primary-light);border-radius:2px;margin-right:4px;opacity:.7"></span>Jugador A</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--success);border-radius:2px;margin-right:4px;opacity:.7"></span>Jugador B</span>
+    <span><span style="display:inline-block;width:10px;height:10px;background:var(--danger);border-radius:2px;margin-right:4px;opacity:.7"></span>Jugador C</span>
+  </div>`;
+}
+
+// ─── Criterios ────────────────────────────────────────────────────────────────
+async function loadCriterios() {
+  const data = await apiFetch('/api/criterios');
+  const byClasif = { A:[], B:[], C:[] };
+  data.forEach(c => { if(byClasif[c.clasificacion]) byClasif[c.clasificacion].push(c); });
+  const LABELS = { A:['Jugador A','Alto rendimiento','fa-star','var(--primary-light)'], B:['Jugador B','Rendimiento estándar','fa-circle-check','var(--success)'], C:['Jugador C','Bajo rendimiento','fa-triangle-exclamation','var(--danger)'] };
+  document.getElementById('criterios-content').innerHTML = `<div class="criterios-grid">
+    ${['A','B','C'].map(c=>{
+      const [label,sub,ico,color] = LABELS[c];
+      return `<div class="criterio-card ${c}">
+        <div class="criterio-header"><i class="fa ${ico}" style="color:${color}"></i> ${label} <span style="font-weight:400;color:var(--gray-500);font-size:11px">· ${sub}</span></div>
+        ${byClasif[c].map(cr=>`
+          <div class="criterio-item">
+            <i class="fa fa-check-circle" style="color:${color};font-size:12px;margin-top:1px;flex-shrink:0"></i>
+            <div><div style="font-size:12px;font-weight:500">${cr.criterio}</div>${cr.descripcion?`<div style="font-size:11px;color:var(--gray-500)">${cr.descripcion}</div>`:''}</div>
+            ${currentUser.rol==='admin'?`<button style="margin-left:auto;background:none;border:none;color:var(--gray-300);cursor:pointer;font-size:11px" onclick="deleteCriterio(${cr.id})"><i class="fa fa-trash"></i></button>`:''}
+          </div>`).join('')}
+      </div>`;
+    }).join('')}
+  </div>`;
+}
+
+let selectedClasifC = null;
+function selClasifC(v) {
+  selectedClasifC = v;
+  document.querySelectorAll('#modal-criterio .clasif-opt').forEach(el => {
+    el.classList.remove('sel-A','sel-B','sel-C');
+    if (el.dataset.v === v) el.classList.add('sel-'+v);
+  });
+  document.getElementById('c-clasif').value = v;
+}
+
+function openNuevoCriterio() { openModal('modal-criterio'); }
+
+async function guardarCriterio() {
+  const clasificacion = document.getElementById('c-clasif').value;
+  const criterio = document.getElementById('c-nombre').value.trim();
+  const descripcion = document.getElementById('c-desc').value.trim();
+  if (!clasificacion || !criterio) { toast('Completa los campos requeridos', 'error'); return; }
+  const res = await apiFetch('/api/criterios', { method:'POST', body: JSON.stringify({ clasificacion, criterio, descripcion }) });
+  if (res.error) { toast(res.error, 'error'); return; }
+  toast('Criterio guardado', 'success');
+  closeModal('modal-criterio');
+  loadCriterios();
+}
+
+async function deleteCriterio(id) {
+  if (!confirm('¿Eliminar este criterio?')) return;
+  await apiFetch('/api/criterios/'+id, { method:'DELETE' });
+  toast('Criterio eliminado');
+  loadCriterios();
+}
+
+// ─── Usuarios ─────────────────────────────────────────────────────────────────
+async function loadUsuarios() {
+  const data = await apiFetch('/api/usuarios');
+  const ROLES = { supervisor:'Supervisor', superintendente:'Superintendente', coord_construccion:'Coord. Construcción', coord_rrhh:'Coord. RRHH', admin:'Administrador' };
+  document.getElementById('usuarios-body').innerHTML = data.map(u=>`<tr>
+    <td><div style="font-weight:500">${u.nombre}</div></td>
+    <td style="color:var(--primary-light)">${u.email}</td>
+    <td><span class="rol-badge">${ROLES[u.rol]||u.rol}</span></td>
+    <td>${u.activo?'<span style="color:var(--success)"><i class="fa fa-circle-check"></i> Activo</span>':'<span style="color:var(--gray-300)">Inactivo</span>'}</td>
+    <td style="font-size:12px;color:var(--gray-500)">${new Date(u.creado_en).toLocaleDateString('es-MX')}</td>
+  </tr>`).join('');
+}
+
+function openNuevoUser() { openModal('modal-usuario'); }
+
+async function guardarUsuario() {
+  const nombre = document.getElementById('u-nombre').value.trim();
+  const email = document.getElementById('u-email').value.trim();
+  const password = document.getElementById('u-pass').value;
+  const rol = document.getElementById('u-rol').value;
+  if (!nombre || !email || !password || !rol) { toast('Completa todos los campos', 'error'); return; }
+  const res = await apiFetch('/api/usuarios', { method:'POST', body: JSON.stringify({ nombre, email, password, rol }) });
+  if (res.error) { toast(res.error, 'error'); return; }
+  toast('Usuario creado correctamente', 'success');
+  closeModal('modal-usuario');
+  loadUsuarios();
+}
+</script>
+</body>
+</html>
